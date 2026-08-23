@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeoVision | Satellite Image Classification</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header class="navbar">
+        <div class="logo">
+            <span class="logo-mark">G</span>
+            <span>GeoVision</span>
+        </div>
+        <span class="status">
+            <span class="status-dot"></span>
+            ML System
+        </span>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <p class="eyebrow">SATELLITE COMPUTER VISION</p>
+            <h1>Understand the <span>Earth from above.</span></h1>
+            <p class="subtitle">
+                Upload a satellite image and GeoVision will classify
+                the dominant land-cover category using a trained
+                computer vision model.
+            </p>
+        </section>
+
+        <section class="workspace">
+            <div class="card upload-card">
+                <div class="card-header">
+                    <div>
+                        <p class="section-label">01</p>
+                        <h2>Upload imagery</h2>
+                    </div>
+                </div>
+
+                <div class="drop-zone" id="dropZone">
+                    <input type="file" id="fileInput" accept="image/*" hidden>
+
+                    <div class="upload-icon">↑</div>
+                    <h3>Drop satellite imagery here</h3>
+
+                    <p>
+                        or
+                        <button id="browseButton" class="browse-button">
+                            browse files
+                        </button>
+                    </p>
+
+                    <span class="file-hint">
+                        PNG, JPG, JPEG · Maximum 10 MB
+                    </span>
+                </div>
+
+                <div id="previewContainer" class="preview-container hidden">
+                    <img id="imagePreview" src="" alt="Uploaded satellite imagery">
+
+                    <div class="file-info">
+                        <div>
+                            <strong id="fileName">image.jpg</strong>
+                            <span id="fileSize">0 KB</span>
+                        </div>
+                        <button id="removeButton" class="remove-button">
+                            Remove
+                        </button>
+                    </div>
+                </div>
+
+                <button id="classifyButton" class="classify-button" disabled>
+                    <span id="buttonText">Classify Image</span>
+                    <span id="loader" class="loader hidden"></span>
+                </button>
+            </div>
+
+            <div class="card results-card">
+                <div class="card-header">
+                    <div>
+                        <p class="section-label">02</p>
+                        <h2>Classification</h2>
+                    </div>
+                </div>
+
+                <div id="emptyState" class="empty-state">
+                    <div class="empty-icon">◇</div>
+                    <h3>Awaiting imagery</h3>
+                    <p>
+                        Upload an image to see GeoVision's
+                        classification results.
+                    </p>
+                </div>
+
+                <div id="results" class="results hidden">
+                    <div class="prediction">
+                        <span class="result-label">PREDICTED LAND COVER</span>
+                        <h3 id="predictionClass">Forest</h3>
+
+                        <div class="confidence">
+                            <span>Confidence</span>
+                            <strong id="confidenceValue">94.2%</strong>
+                        </div>
+
+                        <div class="confidence-bar">
+                            <div id="confidenceFill" class="confidence-fill"></div>
+                        </div>
+                    </div>
+
+                    <div class="probabilities">
+                        <div class="probability-header">
+                            <span>CLASS PROBABILITIES</span>
+                            <span>PROBABILITY</span>
+                        </div>
+
+                        <div class="probability-row">
+                            <span>Forest</span>
+                            <div class="probability-track">
+                                <div class="probability-fill" style="width: 94.2%"></div>
+                            </div>
+                            <strong>94.2%</strong>
+                        </div>
+
+                        <div class="probability-row">
+                            <span>Residential</span>
+                            <div class="probability-track">
+                                <div class="probability-fill" style="width: 3.1%"></div>
+                            </div>
+                            <strong>3.1%</strong>
+                        </div>
+
+                        <div class="probability-row">
+                            <span>Agricultural</span>
+                            <div class="probability-track">
+                                <div class="probability-fill" style="width: 1.8%"></div>
+                            </div>
+                            <strong>1.8%</strong>
+                        </div>
+
+                        <div class="probability-row">
+                            <span>Industrial</span>
+                            <div class="probability-track">
+                                <div class="probability-fill" style="width: 0.6%"></div>
+                            </div>
+                            <strong>0.6%</strong>
+                        </div>
+
+                        <div class="probability-row">
+                            <span>Water</span>
+                            <div class="probability-track">
+                                <div class="probability-fill" style="width: 0.3%"></div>
+                            </div>
+                            <strong>0.3%</strong>
+                        </div>
+                    </div>
+
+                    <div class="model-info">
+                        <div>
+                            <span>MODEL</span>
+                            <strong>GeoVision CNN</strong>
+                        </div>
+                        <div>
+                            <span>INPUT</span>
+                            <strong>Satellite RGB</strong>
+                        </div>
+                        <div>
+                            <span>STATUS</span>
+                            <strong class="online">● Ready</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>GeoVision · Satellite Imagery Classification</p>
+        <p>Computer Vision · Deep Learning</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
