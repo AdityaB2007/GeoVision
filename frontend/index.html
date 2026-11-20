@@ -112,6 +112,47 @@
                         </div>
                     </div>
 
+                    <div class="explainability" id="gradcamPanel">
+                        <div class="explain-header">
+                            <div class="explain-title">
+                                <span class="result-label">MODEL ATTENTION (GRAD-CAM)</span>
+                                <span id="gradcamLayerBadge" class="layer-badge">net.layer4[-1]</span>
+                            </div>
+                            <div class="view-toggle" role="group" aria-label="Grad-CAM view mode">
+                                <button type="button" class="view-btn active" data-view="overlay">Overlay</button>
+                                <button type="button" class="view-btn" data-view="heatmap">Heatmap</button>
+                                <button type="button" class="view-btn" data-view="original">Original</button>
+                            </div>
+                        </div>
+
+                        <div class="gradcam-frame">
+                            <img id="gradcamImage" src="" alt="Grad-CAM attention heatmap">
+                        </div>
+
+                        <div class="explain-controls">
+                            <label class="control-group">
+                                <span>EXPLAIN CLASS</span>
+                                <select id="gradcamClassSelect">
+                                    <option value="">Predicted Class (Auto)</option>
+                                    <option value="AnnualCrop">Annual Crop</option>
+                                    <option value="Forest">Forest</option>
+                                    <option value="HerbaceousVegetation">Herbaceous Vegetation</option>
+                                    <option value="Highway">Highway</option>
+                                    <option value="Industrial">Industrial</option>
+                                    <option value="Pasture">Pasture</option>
+                                    <option value="PermanentCrop">Permanent Crop</option>
+                                    <option value="Residential">Residential</option>
+                                    <option value="River">River</option>
+                                    <option value="SeaLake">Sea &amp; Lake</option>
+                                </select>
+                            </label>
+                            <label class="control-group">
+                                <span>HEATMAP OPACITY · <strong id="gradcamAlphaValue">45%</strong></span>
+                                <input type="range" id="gradcamAlpha" min="0.15" max="0.85" step="0.05" value="0.45">
+                            </label>
+                        </div>
+                    </div>
+
                     <div class="probabilities">
                         <div class="probability-header">
                             <span>CLASS PROBABILITIES (10 EUROSAT CLASSES)</span>
