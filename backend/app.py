@@ -4,13 +4,14 @@ from __future__ import annotations
 
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import FastAPI, File, HTTPException, Query, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from backend.inference import GeoVisionInferenceEngine
 from backend.schemas import (
     ClassInfo,
+    GradCAMResponse,
     HealthResponse,
     ModelInfoResponse,
     PredictionResponse,
@@ -112,9 +113,9 @@ async def list_classes() -> list[ClassInfo]:
     ]
 
 
-@app.post("/predict", response_model=PredictionResponse, tags=["Inference"])
-async def predict(file: UploadFile = File(...)) -> PredictionResponse:
-    """Classify an uploaded RGB satellite patch into 10 EuroSAT classes."""
+async def _read_validated_upload(
+    file: UploadFile,
+) -> tuple[GeoVisionInferenceEngine, bytes]:
     engine = _get_engine()
     if not engine.model_loaded:
         raise HTTPException(
@@ -130,7 +131,13 @@ async def predict(file: UploadFile = File(...)) -> PredictionResponse:
             status_code=413,
             detail="File exceeds maximum allowed size of 10 MB.",
         )
+    return engine, data
 
+
+@app.post("/predict", response_model=PredictionResponse, tags=["Inference"])
+async def predict(file: UploadFile = File(...)) -> PredictionResponse:
+    """Classify an uploaded RGB satellite patch into 10 EuroSAT classes."""
+    engine, data = await _read_validated_upload(file)
     try:
         result = engine.predict_bytes(data)
     except ValueError as exc:
@@ -139,8 +146,41 @@ async def predict(file: UploadFile = File(...)) -> PredictionResponse:
     return PredictionResponse(**result)
 
 
-# Mount static frontend last so API routes (/health, /predict, /classes,
-# /model-info, /docs) always take precedence over static file lookup.
+@app.post("/explain", response_model=GradCAMResponse, tags=["Explainability"])
+async def explain(
+    file: UploadFile = File(...),
+    target_class: str | None = Query(
+        default=None,
+        description="Optional EuroSAT class to explain (defaults to top prediction).",
+    ),
+    alpha: float = Query(
+        default=0.45,
+        ge=0.0,
+        le=1.0,
+        description="Overlay opacity for Grad-CAM heatmap blending.",
+    ),
+    colormap: str = Query(
+        default="turbo",
+        description="Perceptual colormap (turbo, inferno, magma, viridis).",
+    ),
+) -> GradCAMResponse:
+    """Classify an image and return Grad-CAM heatmap & blended RGB overlay."""
+    engine, data = await _read_validated_upload(file)
+    try:
+        result = engine.explain_bytes(
+            data,
+            target_class=target_class,
+            alpha=alpha,
+            colormap=colormap,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    return GradCAMResponse(**result)
+
+
+# Mount static frontend last so API routes (/health, /predict, /explain,
+# /classes, /model-info, /docs) always take precedence over static file lookup.
 if FRONTEND_DIR.exists():
     app.mount(
         "/",
