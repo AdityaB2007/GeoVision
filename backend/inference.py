@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import io
 import os
+import threading
 import time
 from pathlib import Path
 
@@ -25,6 +26,13 @@ from src.config import (
     EUROSAT_CLASSES,
 )
 from src.data.preprocessing import build_transforms
+from src.explainability.gradcam import GradCAM
+from src.explainability.visualization import (
+    SUPPORTED_COLORMAPS,
+    heatmap_to_rgb,
+    image_to_base64_png,
+    overlay_heatmap,
+)
 from src.models.custom_cnn import GeoVisionCNN
 from src.models.transfer import GeoVisionTransferNet
 
@@ -59,6 +67,8 @@ class GeoVisionInferenceEngine:
         self.metrics: dict = {}
         self.training_config: dict = {}
         self.saved_at: str | None = None
+        # Serializes hook registration/backward passes across concurrent HTTP workers
+        self._gradcam_lock = threading.Lock()
 
         if self.checkpoint_path.exists():
             self._load_checkpoint(self.checkpoint_path)
@@ -100,8 +110,8 @@ class GeoVisionInferenceEngine:
         )
         self.model_loaded = True
 
-    def predict_bytes(self, image_bytes: bytes) -> dict:
-        """Decode raw uploaded bytes, preprocess, and return sorted probabilities."""
+    def _decode_rgb_bytes(self, image_bytes: bytes) -> Image.Image:
+        """Validate model readiness and decode raw bytes into an RGB PIL image."""
         if not self.model_loaded or self.model is None or self.transform is None:
             raise RuntimeError("No trained model checkpoint is currently loaded.")
         if not image_bytes:
@@ -109,26 +119,19 @@ class GeoVisionInferenceEngine:
 
         try:
             with Image.open(io.BytesIO(image_bytes)) as img:
-                rgb_img = img.convert("RGB")
+                return img.convert("RGB")
         except (UnidentifiedImageError, OSError) as exc:
             raise ValueError(f"Invalid or corrupted image file: {exc}") from exc
 
-        t0 = time.perf_counter()
-        tensor = self.transform(rgb_img).unsqueeze(0).to(self.device)
-        # torch.inference_mode() disables autograd tracking and view overhead,
-        # cutting memory usage and latency compared to normal training mode.
-        with torch.inference_mode():
-            logits = self.model(tensor)
-            probs = torch.softmax(logits, dim=1)[0].cpu().tolist()
-        elapsed_ms = (time.perf_counter() - t0) * 1000.0
-
+    def _format_prediction_payload(
+        self, probs: list[float], elapsed_ms: float
+    ) -> dict:
         ranked = sorted(
             zip(self.class_names, probs),
             key=lambda item: item[1],
             reverse=True,
         )
         top_class, top_prob = ranked[0]
-
         return {
             "predicted_class": top_class,
             "display_name": CLASS_DISPLAY_NAMES.get(top_class, top_class),
@@ -149,3 +152,74 @@ class GeoVisionInferenceEngine:
             "input_size": int(self.input_size or 64),
             "inference_time_ms": round(elapsed_ms, 2),
         }
+
+    def predict_bytes(self, image_bytes: bytes) -> dict:
+        """Decode raw uploaded bytes, preprocess, and return sorted probabilities."""
+        rgb_img = self._decode_rgb_bytes(image_bytes)
+        assert self.model is not None and self.transform is not None
+
+        t0 = time.perf_counter()
+        tensor = self.transform(rgb_img).unsqueeze(0).to(self.device)
+        # torch.inference_mode() disables autograd tracking and view overhead,
+        # cutting memory usage and latency compared to normal training mode.
+        with torch.inference_mode():
+            logits = self.model(tensor)
+            probs = torch.softmax(logits, dim=1)[0].cpu().tolist()
+        elapsed_ms = (time.perf_counter() - t0) * 1000.0
+        return self._format_prediction_payload(probs, elapsed_ms)
+
+    def explain_bytes(
+        self,
+        image_bytes: bytes,
+        target_class: str | None = None,
+        alpha: float = 0.45,
+        colormap: str = "turbo",
+    ) -> dict:
+        """Compute prediction plus thread-safe Grad-CAM heatmap and overlay PNGs."""
+        if colormap not in SUPPORTED_COLORMAPS:
+            raise ValueError(
+                f"Unsupported colormap '{colormap}'. Choose from {SUPPORTED_COLORMAPS}."
+            )
+        if not (0.0 <= alpha <= 1.0):
+            raise ValueError(f"alpha must be between 0.0 and 1.0, got {alpha}")
+
+        rgb_img = self._decode_rgb_bytes(image_bytes)
+        assert self.model is not None and self.transform is not None
+
+        target_idx: int | None = None
+        if target_class is not None:
+            if target_class not in self.class_names:
+                raise ValueError(
+                    f"Unknown target_class '{target_class}'. Choose from {self.class_names}."
+                )
+            target_idx = self.class_names.index(target_class)
+
+        t0 = time.perf_counter()
+        tensor = self.transform(rgb_img).unsqueeze(0).to(self.device)
+        with self._gradcam_lock:
+            cam_engine = GradCAM(self.model)
+            cam_res = cam_engine.generate(tensor, target_class=target_idx)
+        gradcam_ms = (time.perf_counter() - t0) * 1000.0
+
+        chosen_class = self.class_names[cam_res.target_idx]
+        heat_img = heatmap_to_rgb(cam_res.heatmap, size=(256, 256), colormap=colormap)
+        overlay_img = overlay_heatmap(
+            rgb_img, cam_res.heatmap, alpha=alpha, size=(256, 256), colormap=colormap
+        )
+
+        payload = self._format_prediction_payload(
+            cam_res.probabilities.tolist(), gradcam_ms
+        )
+        payload.update(
+            {
+                "target_class": chosen_class,
+                "target_display_name": CLASS_DISPLAY_NAMES.get(chosen_class, chosen_class),
+                "target_layer": cam_res.target_layer_name,
+                "colormap": colormap,
+                "alpha": float(alpha),
+                "heatmap_base64": image_to_base64_png(heat_img),
+                "overlay_base64": image_to_base64_png(overlay_img),
+                "gradcam_time_ms": round(gradcam_ms, 2),
+            }
+        )
+        return payload
