@@ -1,0 +1,142 @@
+[
+  {
+    "file": "AnnualCrop_1002.jpg",
+    "true_class": "AnnualCrop",
+    "predicted_class": "AnnualCrop",
+    "confidence": 0.95218,
+    "correct": true,
+    "target_layer": "net.layer4[-1]",
+    "heatmap_shape": [
+      4,
+      4
+    ],
+    "colormap": "turbo",
+    "alpha": 0.45
+  },
+  {
+    "file": "Forest_100.jpg",
+    "true_class": "Forest",
+    "predicted_class": "Forest",
+    "confidence": 0.98732,
+    "correct": true,
+    "target_layer": "net.layer4[-1]",
+    "heatmap_shape": [
+      4,
+      4
+    ],
+    "colormap": "turbo",
+    "alpha": 0.45
+  },
+  {
+    "file": "HerbaceousVegetation_10.jpg",
+    "true_class": "HerbaceousVegetation",
+    "predicted_class": "HerbaceousVegetation",
+    "confidence": 0.97021,
+    "correct": true,
+    "target_layer": "net.layer4[-1]",
+    "heatmap_shape": [
+      4,
+      4
+    ],
+    "colormap": "turbo",
+    "alpha": 0.45
+  },
+  {
+    "file": "Highway_100.jpg",
+    "true_class": "Highway",
+    "predicted_class": "Highway",
+    "confidence": 0.97142,
+    "correct": true,
+    "target_layer": "net.layer4[-1]",
+    "heatmap_shape": [
+      4,
+      4
+    ],
+    "colormap": "turbo",
+    "alpha": 0.45
+  },
+  {
+    "file": "Industrial_10.jpg",
+    "true_class": "Industrial",
+    "predicted_class": "Industrial",
+    "confidence": 0.97496,
+    "correct": true,
+    "target_layer": "net.layer4[-1]",
+    "heatmap_shape": [
+      4,
+      4
+    ],
+    "colormap": "turbo",
+    "alpha": 0.45
+  },
+  {
+    "file": "Pasture_1002.jpg",
+    "true_class": "Pasture",
+    "predicted_class": "Pasture",
+    "confidence": 0.82953,
+    "correct": true,
+    "target_layer": "net.layer4[-1]",
+    "heatmap_shape": [
+      4,
+      4
+    ],
+    "colormap": "turbo",
+    "alpha": 0.45
+  },
+  {
+    "file": "PermanentCrop_100.jpg",
+    "true_class": "PermanentCrop",
+    "predicted_class": "Highway",
+    "confidence": 0.23928,
+    "correct": false,
+    "target_layer": "net.layer4[-1]",
+    "heatmap_shape": [
+      4,
+      4
+    ],
+    "colormap": "turbo",
+    "alpha": 0.45
+  },
+  {
+    "file": "Residential_1003.jpg",
+    "true_class": "Residential",
+    "predicted_class": "Residential",
+    "confidence": 0.47983,
+    "correct": true,
+    "target_layer": "net.layer4[-1]",
+    "heatmap_shape": [
+      4,
+      4
+    ],
+    "colormap": "turbo",
+    "alpha": 0.45
+  },
+  {
+    "file": "River_100.jpg",
+    "true_class": "River",
+    "predicted_class": "River",
+    "confidence": 0.35745,
+    "correct": true,
+    "target_layer": "net.layer4[-1]",
+    "heatmap_shape": [
+      4,
+      4
+    ],
+    "colormap": "turbo",
+    "alpha": 0.45
+  },
+  {
+    "file": "SeaLake_1023.jpg",
+    "true_class": "SeaLake",
+    "predicted_class": "SeaLake",
+    "confidence": 0.94412,
+    "correct": true,
+    "target_layer": "net.layer4[-1]",
+    "heatmap_shape": [
+      4,
+      4
+    ],
+    "colormap": "turbo",
+    "alpha": 0.45
+  }
+]
