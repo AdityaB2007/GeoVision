@@ -1,0 +1,107 @@
+[
+  {
+    "file": "Highway_2481.jpg",
+    "true_class": "Highway",
+    "predicted_class": "Residential",
+    "confidence": 1.0,
+    "true_class_prob": 0.0
+  },
+  {
+    "file": "Highway_1678.jpg",
+    "true_class": "Highway",
+    "predicted_class": "Residential",
+    "confidence": 0.99805,
+    "true_class_prob": 0.0008
+  },
+  {
+    "file": "Highway_1709.jpg",
+    "true_class": "Highway",
+    "predicted_class": "Residential",
+    "confidence": 0.99743,
+    "true_class_prob": 0.00026
+  },
+  {
+    "file": "Pasture_889.jpg",
+    "true_class": "Pasture",
+    "predicted_class": "Forest",
+    "confidence": 0.99591,
+    "true_class_prob": 0.00399
+  },
+  {
+    "file": "Highway_1358.jpg",
+    "true_class": "Highway",
+    "predicted_class": "Residential",
+    "confidence": 0.99547,
+    "true_class_prob": 0.00052
+  },
+  {
+    "file": "River_23.jpg",
+    "true_class": "River",
+    "predicted_class": "AnnualCrop",
+    "confidence": 0.99485,
+    "true_class_prob": 3e-05
+  },
+  {
+    "file": "Highway_1508.jpg",
+    "true_class": "Highway",
+    "predicted_class": "Industrial",
+    "confidence": 0.99442,
+    "true_class_prob": 0.00411
+  },
+  {
+    "file": "AnnualCrop_2859.jpg",
+    "true_class": "AnnualCrop",
+    "predicted_class": "Forest",
+    "confidence": 0.99353,
+    "true_class_prob": 3e-05
+  },
+  {
+    "file": "Highway_1593.jpg",
+    "true_class": "Highway",
+    "predicted_class": "AnnualCrop",
+    "confidence": 0.9934,
+    "true_class_prob": 0.00275
+  },
+  {
+    "file": "HerbaceousVegetation_973.jpg",
+    "true_class": "HerbaceousVegetation",
+    "predicted_class": "Highway",
+    "confidence": 0.98923,
+    "true_class_prob": 6e-05
+  },
+  {
+    "file": "River_256.jpg",
+    "true_class": "River",
+    "predicted_class": "Industrial",
+    "confidence": 0.98836,
+    "true_class_prob": 0.00262
+  },
+  {
+    "file": "River_2382.jpg",
+    "true_class": "River",
+    "predicted_class": "HerbaceousVegetation",
+    "confidence": 0.98302,
+    "true_class_prob": 0.00508
+  },
+  {
+    "file": "HerbaceousVegetation_1686.jpg",
+    "true_class": "HerbaceousVegetation",
+    "predicted_class": "PermanentCrop",
+    "confidence": 0.9813,
+    "true_class_prob": 0.00247
+  },
+  {
+    "file": "Highway_57.jpg",
+    "true_class": "Highway",
+    "predicted_class": "Residential",
+    "confidence": 0.97992,
+    "true_class_prob": 0.01404
+  },
+  {
+    "file": "Highway_145.jpg",
+    "true_class": "Highway",
+    "predicted_class": "Residential",
+    "confidence": 0.97424,
+    "true_class_prob": 0.0087
+  }
+]
