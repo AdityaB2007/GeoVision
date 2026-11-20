@@ -25,6 +25,17 @@ class PredictionResponse(BaseModel):
     inference_time_ms: float
 
 
+class GradCAMResponse(PredictionResponse):
+    target_class: str
+    target_display_name: str
+    target_layer: str
+    colormap: str
+    alpha: float = Field(..., ge=0.0, le=1.0)
+    heatmap_base64: str
+    overlay_base64: str
+    gradcam_time_ms: float
+
+
 class HealthResponse(BaseModel):
     status: str
     model_loaded: bool
