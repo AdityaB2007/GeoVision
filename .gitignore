@@ -12,15 +12,19 @@ env/
 .ipynb_checkpoints/
 
 # Data
-data/raw/
-data/processed/
+/data/raw/
+/data/processed/
 
 # Trained models
-models/
+/models/
 *.pth
 *.pt
 *.h5
 *.keras
+*.joblib
+
+# Test cache
+.pytest_cache/
 
 # Environment variables
 .env
