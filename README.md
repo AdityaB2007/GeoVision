@@ -12,7 +12,8 @@
   2. **Custom CNN (`GeoVisionCNN`):** 4-block Conv–BatchNorm–ReLU–MaxPool architecture (469,354 parameters) with Global Average Pooling designed from scratch for `64×64` patches.
   3. **Transfer Learning (`GeoVisionTransferNet`):** Two-stage fine-tuning (`ResNet-18`, `ResNet-50`, `EfficientNet-B0`) using Stage 1 linear probing followed by Stage 2 selective `layer4` unfreezing with differential learning rates.
 - **Quantitative Evaluation & Calibration (`src/evaluation/`):** Accuracy, Top-3 Accuracy, Macro/Weighted F1, Confusion Matrices, One-vs-Rest ROC curves, 10-bin Expected Calibration Error (ECE) reliability diagrams, and Top-15 confident misclassification error reports.
-- **Production FastAPI + Vanilla JS App (`backend/`, `frontend/`):** Serves the interactive dark-mode UI directly alongside `/predict`, `/health`, `/model-info`, and `/classes`, reconstructing the exact training preprocessing from self-contained `.pt` checkpoints.
+- **Visual Explainability with Grad-CAM (`src/explainability/`):** Hook-based Grad-CAM heatmaps across `GeoVisionCNN`, `ResNet-18/50`, and `EfficientNet-B0`, supporting perceptual colormaps, opacity blending, 10-class test galleries, and counterfactual class explanations (`POST /explain`).
+- **Production FastAPI + Vanilla JS App (`backend/`, `frontend/`):** Serves the interactive dark-mode UI directly alongside `/predict`, `/explain`, `/health`, `/model-info`, and `/classes`, reconstructing exact training preprocessing from self-contained `.pt` checkpoints.
 
 ---
 
@@ -35,18 +36,19 @@ Diagnostic plots & JSON reports are saved in `outputs/evaluation/` (including [`
 ```text
 GeoVision/
 ├── backend/
-│   ├── app.py                  # FastAPI endpoints (/health, /predict, /classes, /model-info) + static UI mount
-│   ├── inference.py            # Checkpoint loading & deterministic PyTorch inference engine
+│   ├── app.py                  # FastAPI endpoints (/health, /predict, /explain, /classes, /model-info) + static UI mount
+│   ├── inference.py            # Checkpoint loading, PyTorch inference & thread-safe Grad-CAM engine
 │   └── schemas.py              # Pydantic v2 response contracts
 ├── docs/
 │   ├── EUROSAT_DATASET_RESEARCH.md   # Deep research on EuroSAT Zenodo/HF sources, 13 bands & splits
 │   └── ML_CONCEPTS_GUIDE.md          # End-to-end ML/DL teaching curriculum mapped to code
 ├── frontend/
-│   ├── index.html              # Interactive satellite upload & 10-class probability dashboard
-│   ├── script.js               # Drag-and-drop / file picker wired to FastAPI /health & /predict
+│   ├── index.html              # Interactive satellite upload, Grad-CAM overlay & 10-class probability UI
+│   ├── script.js               # Drag-and-drop / file picker wired to FastAPI /health & /explain
 │   └── styles.css
 ├── outputs/
 │   ├── evaluation/             # Confusion matrices, ROC curves, reliability diagrams, comparison charts
+│   ├── explainability/         # 10-class Grad-CAM gallery & per-sample attribution metadata
 │   └── training/               # Epoch loss/accuracy histories & learning curves
 ├── src/
 │   ├── config.py               # Paths, 10 EuroSAT classes, 13-band metadata, ImageNet stats
@@ -58,12 +60,17 @@ GeoVision/
 │   │   ├── baseline.py         # Handcrafted 122-feature extractor & sklearn classifier
 │   │   ├── custom_cnn.py       # 4-stage GeoVisionCNN from scratch
 │   │   └── transfer.py         # ResNet-18/50 & EfficientNet-B0 two-stage transfer learning
+│   ├── explainability/
+│   │   ├── gradcam.py          # Hook-based Grad-CAM attribution & target-layer resolver
+│   │   ├── visualization.py    # Perceptual colormaps, alpha-blending & gallery renderer
+│   │   └── generate_gallery.py # CLI to generate 10-class EuroSAT Grad-CAM gallery
 │   ├── training/
 │   │   └── train.py            # Unified training CLI with AdamW, cosine LR & label smoothing
 │   └── evaluation/
 │       └── evaluate.py         # Metrics, calibration ECE, error analysis & comparison report
 ├── tests/
 │   ├── test_preprocessing_and_models.py
+│   ├── test_gradcam.py
 │   └── test_api.py
 └── requirements.txt
 ```
@@ -104,11 +111,16 @@ python -m venv .venv
 .\.venv\Scripts\python.exe -m src.evaluation.evaluate --compare
 ```
 
+**Generate the 10-class Grad-CAM attention gallery (`outputs/explainability/gradcam_gallery.png`):**
+```powershell
+.\.venv\Scripts\python.exe -m src.explainability.generate_gallery --checkpoint models/best_model.pt --colormap turbo --alpha 0.45
+```
+
 ### 4. Launch the Interactive Web App
 ```powershell
 .\.venv\Scripts\python.exe -m uvicorn backend.app:app --reload
 ```
-Then open **http://127.0.0.1:8000** (or Swagger API docs at **http://127.0.0.1:8000/docs**).
+Then open **http://127.0.0.1:8000** (or Swagger API docs at **http://127.0.0.1:8000/docs**) to classify satellite imagery, inspect **Grad-CAM heatmaps** (`Overlay` / `Heatmap` / `Original`), adjust overlay opacity, or query counterfactual explanations (`POST /explain?target_class=Highway`).
 
 ### 5. Run Tests
 ```powershell
