@@ -69,6 +69,10 @@ body {
     background: var(--accent);
 }
 
+.status-dot.offline {
+    background: #e17a7a;
+}
+
 .container {
     width: min(1200px, 88%);
     margin: 0 auto;
@@ -334,16 +338,41 @@ body {
 
 .probability-row {
     display: grid;
-    grid-template-columns: 100px 1fr 55px;
+    grid-template-columns: 165px 1fr 56px;
     align-items: center;
     gap: 10px;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     font-size: 13px;
+    color: var(--muted);
+}
+
+.probability-row.is-top {
+    color: var(--text);
+    font-weight: 600;
 }
 
 .probability-row strong {
     text-align: right;
     font-size: 12px;
+    color: var(--text);
+}
+
+.prediction-description {
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+.error-banner {
+    margin-top: 16px;
+    padding: 12px 14px;
+    border-radius: 9px;
+    border: 1px solid rgba(225, 122, 122, 0.45);
+    background: rgba(225, 122, 122, 0.1);
+    color: #f4a4a4;
+    font-size: 13px;
+    line-height: 1.45;
 }
 
 .model-info {
