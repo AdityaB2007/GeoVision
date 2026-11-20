@@ -14,8 +14,8 @@
             <span>GeoVision</span>
         </div>
         <span class="status">
-            <span class="status-dot"></span>
-            ML System
+            <span id="statusDot" class="status-dot"></span>
+            <span id="statusText">ML System</span>
         </span>
     </header>
 
@@ -71,6 +71,8 @@
                     </div>
                 </div>
 
+                <div id="errorMessage" class="error-banner hidden" role="alert"></div>
+
                 <button id="classifyButton" class="classify-button" disabled>
                     <span id="buttonText">Classify Image</span>
                     <span id="loader" class="loader hidden"></span>
@@ -98,10 +100,11 @@
                     <div class="prediction">
                         <span class="result-label">PREDICTED LAND COVER</span>
                         <h3 id="predictionClass">Forest</h3>
+                        <p id="predictionDescription" class="prediction-description"></p>
 
                         <div class="confidence">
                             <span>Confidence</span>
-                            <strong id="confidenceValue">94.2%</strong>
+                            <strong id="confidenceValue">0.0%</strong>
                         </div>
 
                         <div class="confidence-bar">
@@ -111,63 +114,25 @@
 
                     <div class="probabilities">
                         <div class="probability-header">
-                            <span>CLASS PROBABILITIES</span>
+                            <span>CLASS PROBABILITIES (10 EUROSAT CLASSES)</span>
                             <span>PROBABILITY</span>
                         </div>
 
-                        <div class="probability-row">
-                            <span>Forest</span>
-                            <div class="probability-track">
-                                <div class="probability-fill" style="width: 94.2%"></div>
-                            </div>
-                            <strong>94.2%</strong>
-                        </div>
-
-                        <div class="probability-row">
-                            <span>Residential</span>
-                            <div class="probability-track">
-                                <div class="probability-fill" style="width: 3.1%"></div>
-                            </div>
-                            <strong>3.1%</strong>
-                        </div>
-
-                        <div class="probability-row">
-                            <span>Agricultural</span>
-                            <div class="probability-track">
-                                <div class="probability-fill" style="width: 1.8%"></div>
-                            </div>
-                            <strong>1.8%</strong>
-                        </div>
-
-                        <div class="probability-row">
-                            <span>Industrial</span>
-                            <div class="probability-track">
-                                <div class="probability-fill" style="width: 0.6%"></div>
-                            </div>
-                            <strong>0.6%</strong>
-                        </div>
-
-                        <div class="probability-row">
-                            <span>Water</span>
-                            <div class="probability-track">
-                                <div class="probability-fill" style="width: 0.3%"></div>
-                            </div>
-                            <strong>0.3%</strong>
-                        </div>
+                        <div id="probabilityList"></div>
                     </div>
 
                     <div class="model-info">
                         <div>
                             <span>MODEL</span>
-                            <strong>GeoVision CNN</strong>
+                            <strong id="modelNameValue">GeoVision CNN</strong>
                         </div>
                         <div>
                             <span>INPUT</span>
-                            <strong>Satellite RGB</strong>
+                            <strong id="inputSpecValue">Satellite RGB</strong>
                         </div>
                         <div>
                             <span>STATUS</span>
-                            <strong class="online">● Ready</strong>
+                            <strong id="modelStatusValue" class="online">● Ready</strong>
                         </div>
                     </div>
                 </div>
