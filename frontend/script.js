@@ -31,10 +31,19 @@ const modelNameValue = document.getElementById("modelNameValue");
 const inputSpecValue = document.getElementById("inputSpecValue");
 const modelStatusValue = document.getElementById("modelStatusValue");
 
+const gradcamLayerBadge = document.getElementById("gradcamLayerBadge");
+const gradcamImage = document.getElementById("gradcamImage");
+const gradcamClassSelect = document.getElementById("gradcamClassSelect");
+const gradcamAlpha = document.getElementById("gradcamAlpha");
+const gradcamAlphaValue = document.getElementById("gradcamAlphaValue");
+const viewButtons = document.querySelectorAll(".view-btn");
+
 // Track the active File object explicitly so drag-and-drop works identically
 // to the native file picker (event.dataTransfer.files is not placed in fileInput).
 let selectedFile = null;
 let apiBase = "";
+let lastExplainData = null;
+let activeGradcamView = "overlay";
 
 function showError(message) {
     errorMessage.textContent = message;
@@ -164,8 +173,15 @@ function formatFileSize(bytes) {
 
 removeButton.addEventListener("click", () => {
     selectedFile = null;
+    lastExplainData = null;
+    activeGradcamView = "overlay";
     fileInput.value = "";
     imagePreview.src = "";
+    gradcamImage.src = "";
+    gradcamClassSelect.value = "";
+    gradcamAlpha.value = "0.45";
+    gradcamAlphaValue.textContent = "45%";
+    setActiveViewButton("overlay");
     clearError();
 
     previewContainer.classList.add("hidden");
@@ -175,6 +191,96 @@ removeButton.addEventListener("click", () => {
 
     results.classList.add("hidden");
     emptyState.classList.remove("hidden");
+});
+
+function setActiveViewButton(view) {
+    activeGradcamView = view;
+    viewButtons.forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.view === view);
+    });
+}
+
+function updateGradcamImage() {
+    if (!lastExplainData) {
+        return;
+    }
+    if (activeGradcamView === "heatmap") {
+        gradcamImage.src = lastExplainData.heatmap_base64;
+    } else if (activeGradcamView === "original") {
+        gradcamImage.src = imagePreview.src;
+    } else {
+        gradcamImage.src = lastExplainData.overlay_base64;
+    }
+}
+
+function renderGradcam(data) {
+    lastExplainData = data;
+    gradcamLayerBadge.textContent = data.target_layer || "net.layer4[-1]";
+    updateGradcamImage();
+}
+
+async function fetchExplanation(targetClass = "", alpha = 0.45) {
+    if (!apiBase) {
+        apiBase = await resolveApiBase();
+    }
+    const params = new URLSearchParams({
+        alpha: Number(alpha).toFixed(2),
+        colormap: "turbo",
+    });
+    if (targetClass) {
+        params.set("target_class", targetClass);
+    }
+
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+
+    const response = await fetch(`${apiBase}/explain?${params.toString()}`, {
+        method: "POST",
+        body: formData,
+    });
+
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) {
+        throw new Error(payload.detail || `Explain request failed (HTTP ${response.status}).`);
+    }
+    return payload;
+}
+
+viewButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+        setActiveViewButton(btn.dataset.view || "overlay");
+        updateGradcamImage();
+    });
+});
+
+gradcamClassSelect.addEventListener("change", async () => {
+    if (!selectedFile || !lastExplainData) {
+        return;
+    }
+    clearError();
+    try {
+        const payload = await fetchExplanation(gradcamClassSelect.value, gradcamAlpha.value);
+        renderGradcam(payload);
+    } catch (error) {
+        showError(error.message || "Failed to update Grad-CAM target class.");
+    }
+});
+
+gradcamAlpha.addEventListener("input", () => {
+    gradcamAlphaValue.textContent = `${Math.round(Number(gradcamAlpha.value) * 100)}%`;
+});
+
+gradcamAlpha.addEventListener("change", async () => {
+    if (!selectedFile || !lastExplainData) {
+        return;
+    }
+    clearError();
+    try {
+        const payload = await fetchExplanation(gradcamClassSelect.value, gradcamAlpha.value);
+        renderGradcam(payload);
+    } catch (error) {
+        showError(error.message || "Failed to update Grad-CAM opacity.");
+    }
 });
 
 function renderPrediction(data) {
@@ -232,23 +338,12 @@ classifyButton.addEventListener("click", async () => {
     loader.classList.remove("hidden");
 
     try {
-        if (!apiBase) {
-            apiBase = await resolveApiBase();
-        }
-        const formData = new FormData();
-        formData.append("file", selectedFile);
-
-        const response = await fetch(`${apiBase}/predict`, {
-            method: "POST",
-            body: formData,
-        });
-
-        const payload = await response.json().catch(() => ({}));
-        if (!response.ok) {
-            throw new Error(payload.detail || `Prediction failed (HTTP ${response.status}).`);
-        }
-
+        const payload = await fetchExplanation(
+            gradcamClassSelect.value,
+            gradcamAlpha.value
+        );
         renderPrediction(payload);
+        renderGradcam(payload);
     } catch (error) {
         showError(
             error.message ||
