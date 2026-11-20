@@ -1,0 +1,29 @@
+{
+  "baseline_logreg": {
+    "num_samples": 5400,
+    "accuracy": 0.85,
+    "top3_accuracy": 0.97704,
+    "macro_f1": 0.84346,
+    "weighted_f1": 0.8482,
+    "macro_roc_auc_ovr": 0.98306,
+    "expected_calibration_error": 0.02615
+  },
+  "custom_cnn": {
+    "num_samples": 5400,
+    "accuracy": 0.87426,
+    "top3_accuracy": 0.98778,
+    "macro_f1": 0.86953,
+    "weighted_f1": 0.8724,
+    "macro_roc_auc_ovr": 0.98997,
+    "expected_calibration_error": 0.06412
+  },
+  "transfer_resnet18": {
+    "num_samples": 5400,
+    "accuracy": 0.93278,
+    "top3_accuracy": 0.99463,
+    "macro_f1": 0.93128,
+    "weighted_f1": 0.9328,
+    "macro_roc_auc_ovr": 0.99664,
+    "expected_calibration_error": 0.05063
+  }
+}
