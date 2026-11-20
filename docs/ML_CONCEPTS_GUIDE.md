@@ -111,6 +111,22 @@ Accuracy alone hides failure modes. GeoVision computes:
 
 ---
 
+## Module 9: Visual Explainability with Grad-CAM
+**Code:** [`src/explainability/gradcam.py`](../src/explainability/gradcam.py), [`src/explainability/visualization.py`](../src/explainability/visualization.py), [`src/explainability/generate_gallery.py`](../src/explainability/generate_gallery.py)
+
+High accuracy alone does not prove a satellite classifier learned physically meaningful cues — a model could cheat by memorizing border artifacts or background haze. **Grad-CAM (Gradient-weighted Class Activation Mapping)** opens the CNN "black box" for any target class $c$:
+
+1. **Channel Importance Weights ($\alpha_k^c$):** Take the pre-softmax logit $y^c$ and backpropagate gradients into the final spatial convolutional feature maps $A^k \in \mathbb{R}^{H' \times W'}$ (`net.layer4[-1]` at $4 \times 4$ for ResNet-18, or `features[-2]` at $8 \times 8$ for `GeoVisionCNN`), then global-average-pool across spatial positions:
+   $$\alpha_k^c = \frac{1}{Z} \sum_{i} \sum_{j} \frac{\partial y^c}{\partial A^k_{i,j}}$$
+2. **Positive Evidence Filter ($\text{ReLU}$):** Multiply each feature map by its importance weight and discard negative contributions:
+   $$L^c_{\text{Grad-CAM}} = \text{ReLU}\!\left(\sum_k \alpha_k^c A^k\right)$$
+   Why `ReLU`? Negative sums correspond to features supporting *other* land-cover classes. Keeping only positive activations highlights pixels that actively increase class $c$'s score.
+3. **Why the Final Convolutional Layer?** Early conv layers have crisp resolution but only detect generic edges; global pooling destroys all spatial layout. The final conv block preserves coarse spatial coordinates while encoding high-level concepts (highway strips, rooftops, river curves).
+4. **Counterfactual Grad-CAM:** By passing `target_class="Highway"` (even if the top prediction is `"River"`), you can ask: *"Which pixels made the model think Highway?"*
+5. **10-Class Gallery ([`gradcam_gallery.png`](../outputs/explainability/gradcam_gallery.png)):** Generated across one held-out test patch per class (`9/10` predicted correctly in [`gradcam_samples.json`](../outputs/explainability/gradcam_samples.json), while the lone low-confidence `23.9%` miss on `PermanentCrop_100.jpg` demonstrates how Grad-CAM flags ambiguous linear patterns!).
+
+---
+
 ## Observed GeoVision Empirical Benchmark Results
 
 All three models were evaluated on the exact same held-out **5,400-image** TorchGeo official test split (`eurosat-test.txt`):
