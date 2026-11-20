@@ -1,0 +1,442 @@
+{
+  "model_name": "custom_cnn",
+  "num_samples": 5400,
+  "accuracy": 0.87426,
+  "top3_accuracy": 0.98778,
+  "macro_precision": 0.87009,
+  "macro_recall": 0.87391,
+  "macro_f1": 0.86953,
+  "weighted_f1": 0.8724,
+  "macro_roc_auc_ovr": 0.98997,
+  "expected_calibration_error": 0.06412,
+  "calibration_bins": [
+    {
+      "bin_lower": 0.0,
+      "bin_upper": 0.1,
+      "count": 0,
+      "avg_confidence": 0.05,
+      "avg_accuracy": 0.0
+    },
+    {
+      "bin_lower": 0.1,
+      "bin_upper": 0.2,
+      "count": 0,
+      "avg_confidence": 0.15,
+      "avg_accuracy": 0.0
+    },
+    {
+      "bin_lower": 0.2,
+      "bin_upper": 0.3,
+      "count": 30,
+      "avg_confidence": 0.2739,
+      "avg_accuracy": 0.4
+    },
+    {
+      "bin_lower": 0.3,
+      "bin_upper": 0.4,
+      "count": 181,
+      "avg_confidence": 0.3586,
+      "avg_accuracy": 0.4365
+    },
+    {
+      "bin_lower": 0.4,
+      "bin_upper": 0.5,
+      "count": 327,
+      "avg_confidence": 0.4537,
+      "avg_accuracy": 0.5382
+    },
+    {
+      "bin_lower": 0.5,
+      "bin_upper": 0.6,
+      "count": 406,
+      "avg_confidence": 0.5496,
+      "avg_accuracy": 0.6355
+    },
+    {
+      "bin_lower": 0.6,
+      "bin_upper": 0.7,
+      "count": 430,
+      "avg_confidence": 0.6504,
+      "avg_accuracy": 0.7372
+    },
+    {
+      "bin_lower": 0.7,
+      "bin_upper": 0.8,
+      "count": 570,
+      "avg_confidence": 0.7531,
+      "avg_accuracy": 0.8667
+    },
+    {
+      "bin_lower": 0.8,
+      "bin_upper": 0.9,
+      "count": 902,
+      "avg_confidence": 0.8575,
+      "avg_accuracy": 0.9468
+    },
+    {
+      "bin_lower": 0.9,
+      "bin_upper": 1.0,
+      "count": 2554,
+      "avg_confidence": 0.9584,
+      "avg_accuracy": 0.991
+    }
+  ],
+  "per_class": {
+    "AnnualCrop": {
+      "precision": 0.89055,
+      "recall": 0.90101,
+      "f1_score": 0.89575,
+      "support": 596,
+      "roc_auc": 0.99132
+    },
+    "Forest": {
+      "precision": 0.98625,
+      "recall": 0.94408,
+      "f1_score": 0.96471,
+      "support": 608,
+      "roc_auc": 0.99933
+    },
+    "HerbaceousVegetation": {
+      "precision": 0.85714,
+      "recall": 0.65969,
+      "f1_score": 0.74556,
+      "support": 573,
+      "roc_auc": 0.9767
+    },
+    "Highway": {
+      "precision": 0.79505,
+      "recall": 0.71169,
+      "f1_score": 0.75106,
+      "support": 496,
+      "roc_auc": 0.97352
+    },
+    "Industrial": {
+      "precision": 0.90977,
+      "recall": 0.96607,
+      "f1_score": 0.93708,
+      "support": 501,
+      "roc_auc": 0.99827
+    },
+    "Pasture": {
+      "precision": 0.80603,
+      "recall": 0.94444,
+      "f1_score": 0.86977,
+      "support": 396,
+      "roc_auc": 0.99642
+    },
+    "PermanentCrop": {
+      "precision": 0.75126,
+      "recall": 0.83086,
+      "f1_score": 0.78906,
+      "support": 538,
+      "roc_auc": 0.98256
+    },
+    "Residential": {
+      "precision": 0.93632,
+      "recall": 0.98195,
+      "f1_score": 0.95859,
+      "support": 554,
+      "roc_auc": 0.99899
+    },
+    "River": {
+      "precision": 0.80258,
+      "recall": 0.82231,
+      "f1_score": 0.81232,
+      "support": 529,
+      "roc_auc": 0.98308
+    },
+    "SeaLake": {
+      "precision": 0.96591,
+      "recall": 0.97701,
+      "f1_score": 0.97143,
+      "support": 609,
+      "roc_auc": 0.99947
+    }
+  },
+  "confusion_matrix": [
+    [
+      537,
+      3,
+      1,
+      4,
+      0,
+      11,
+      13,
+      0,
+      18,
+      9
+    ],
+    [
+      0,
+      574,
+      8,
+      0,
+      0,
+      17,
+      1,
+      1,
+      1,
+      6
+    ],
+    [
+      10,
+      1,
+      378,
+      20,
+      16,
+      19,
+      88,
+      16,
+      21,
+      4
+    ],
+    [
+      14,
+      1,
+      8,
+      353,
+      20,
+      11,
+      33,
+      10,
+      46,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      7,
+      484,
+      0,
+      2,
+      7,
+      1,
+      0
+    ],
+    [
+      3,
+      0,
+      9,
+      2,
+      0,
+      374,
+      1,
+      0,
+      6,
+      1
+    ],
+    [
+      18,
+      0,
+      33,
+      15,
+      5,
+      9,
+      447,
+      3,
+      8,
+      0
+    ],
+    [
+      0,
+      0,
+      2,
+      3,
+      5,
+      0,
+      0,
+      544,
+      0,
+      0
+    ],
+    [
+      20,
+      3,
+      2,
+      40,
+      2,
+      16,
+      10,
+      0,
+      435,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      0,
+      0,
+      7,
+      0,
+      0,
+      6,
+      595
+    ]
+  ],
+  "top_confusion_pairs": [
+    {
+      "true_class": "HerbaceousVegetation",
+      "predicted_class": "PermanentCrop",
+      "count": 88
+    },
+    {
+      "true_class": "Highway",
+      "predicted_class": "River",
+      "count": 46
+    },
+    {
+      "true_class": "River",
+      "predicted_class": "Highway",
+      "count": 40
+    },
+    {
+      "true_class": "Highway",
+      "predicted_class": "PermanentCrop",
+      "count": 33
+    },
+    {
+      "true_class": "PermanentCrop",
+      "predicted_class": "HerbaceousVegetation",
+      "count": 33
+    },
+    {
+      "true_class": "HerbaceousVegetation",
+      "predicted_class": "River",
+      "count": 21
+    },
+    {
+      "true_class": "HerbaceousVegetation",
+      "predicted_class": "Highway",
+      "count": 20
+    },
+    {
+      "true_class": "Highway",
+      "predicted_class": "Industrial",
+      "count": 20
+    },
+    {
+      "true_class": "River",
+      "predicted_class": "AnnualCrop",
+      "count": 20
+    },
+    {
+      "true_class": "HerbaceousVegetation",
+      "predicted_class": "Pasture",
+      "count": 19
+    }
+  ],
+  "top_confident_misclassifications": [
+    {
+      "file": "AnnualCrop_2859.jpg",
+      "true_class": "AnnualCrop",
+      "predicted_class": "Forest",
+      "confidence": 0.98915,
+      "true_class_prob": 0.00061
+    },
+    {
+      "file": "Highway_1678.jpg",
+      "true_class": "Highway",
+      "predicted_class": "Residential",
+      "confidence": 0.97019,
+      "true_class_prob": 0.00818
+    },
+    {
+      "file": "Industrial_1119.jpg",
+      "true_class": "Industrial",
+      "predicted_class": "Residential",
+      "confidence": 0.96255,
+      "true_class_prob": 0.01746
+    },
+    {
+      "file": "AnnualCrop_1110.jpg",
+      "true_class": "AnnualCrop",
+      "predicted_class": "River",
+      "confidence": 0.9586,
+      "true_class_prob": 0.01104
+    },
+    {
+      "file": "HerbaceousVegetation_2131.jpg",
+      "true_class": "HerbaceousVegetation",
+      "predicted_class": "Residential",
+      "confidence": 0.95554,
+      "true_class_prob": 0.01598
+    },
+    {
+      "file": "HerbaceousVegetation_971.jpg",
+      "true_class": "HerbaceousVegetation",
+      "predicted_class": "Residential",
+      "confidence": 0.95209,
+      "true_class_prob": 0.01945
+    },
+    {
+      "file": "Residential_1913.jpg",
+      "true_class": "Residential",
+      "predicted_class": "Industrial",
+      "confidence": 0.94669,
+      "true_class_prob": 0.02399
+    },
+    {
+      "file": "HerbaceousVegetation_1212.jpg",
+      "true_class": "HerbaceousVegetation",
+      "predicted_class": "Residential",
+      "confidence": 0.94621,
+      "true_class_prob": 0.02148
+    },
+    {
+      "file": "Highway_2061.jpg",
+      "true_class": "Highway",
+      "predicted_class": "Industrial",
+      "confidence": 0.93741,
+      "true_class_prob": 0.02976
+    },
+    {
+      "file": "Forest_2655.jpg",
+      "true_class": "Forest",
+      "predicted_class": "HerbaceousVegetation",
+      "confidence": 0.93531,
+      "true_class_prob": 0.01537
+    },
+    {
+      "file": "PermanentCrop_1380.jpg",
+      "true_class": "PermanentCrop",
+      "predicted_class": "HerbaceousVegetation",
+      "confidence": 0.93502,
+      "true_class_prob": 0.04922
+    },
+    {
+      "file": "Highway_1508.jpg",
+      "true_class": "Highway",
+      "predicted_class": "Industrial",
+      "confidence": 0.92605,
+      "true_class_prob": 0.01181
+    },
+    {
+      "file": "AnnualCrop_2989.jpg",
+      "true_class": "AnnualCrop",
+      "predicted_class": "Pasture",
+      "confidence": 0.92332,
+      "true_class_prob": 0.02289
+    },
+    {
+      "file": "River_498.jpg",
+      "true_class": "River",
+      "predicted_class": "Pasture",
+      "confidence": 0.92298,
+      "true_class_prob": 0.05116
+    },
+    {
+      "file": "AnnualCrop_2576.jpg",
+      "true_class": "AnnualCrop",
+      "predicted_class": "SeaLake",
+      "confidence": 0.92269,
+      "true_class_prob": 0.0432
+    }
+  ],
+  "artifacts": {
+    "confusion_matrix_plot": "C:\\Users\\User\\.gemini\\antigravity\\scratch\\GeoVision\\outputs\\evaluation\\custom_cnn_confusion_matrix.png",
+    "roc_curves_plot": "C:\\Users\\User\\.gemini\\antigravity\\scratch\\GeoVision\\outputs\\evaluation\\custom_cnn_roc_curves.png",
+    "calibration_plot": "C:\\Users\\User\\.gemini\\antigravity\\scratch\\GeoVision\\outputs\\evaluation\\custom_cnn_calibration.png"
+  }
+}
